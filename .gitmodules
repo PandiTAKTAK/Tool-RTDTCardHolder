@@ -1,0 +1,3 @@
+[submodule "Lib-CrystalGenerator"]
+	path = Lib-CrystalGenerator
+	url = git@github.com:DiagnosticsMonkey/Lib-CrystalGenerator.git
