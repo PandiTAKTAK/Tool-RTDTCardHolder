@@ -41,12 +41,15 @@ module CardSlotBody(CardHeight, CardWidth, FaceTilt = 10, Lip = 2)
     BodyDepth = 1 + (2 * WallTh); // Y after rot
     BodyTilt = 90 - FaceTilt;
 
-    difference()
+    hull()
    {
       rotate([BodyTilt, 0, 0])
          cube([BodyWidth, BodyHeight, BodyDepth]);
-      // TODO: Add second cube (no rot) and hull?
 
+      // TODO: Calc actuals
+      translate([0 , 30, 0])
+         rotate([90, 0, 0])
+            #cube([BodyWidth, BodyHeight, BodyDepth]);
    }
 }
 
@@ -93,7 +96,7 @@ module CardHolder()
                Shard_Diameter_Variance_Percentage = 100,
                Hollow_Shards = 0,
                Hollow_Shard_Wall_Thickness = WallTh,
-               Base_Type = 2
+               Base_Type = 0
             );
                  
             if (i < CardQty)
