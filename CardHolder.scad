@@ -15,7 +15,7 @@ CardThickness = 0.2;
 // Card Quantity
 CardQty = 3;
 // Lips
-FaceLips = 3;
+FaceLips = 2;
 // Card Angle
 FaceTilt = 10; // From vertical
 //Wall Thickness
@@ -35,42 +35,64 @@ Wiggle = 0.2;
 
 module CardSlotBody(CardHeight, CardWidth, FaceTilt = 10, Lip = 2)
 {
-    
-    BodyHeight = CardHeight + WallTh; // Z after rot
-    BodyWidth = CardWidth + (2 * WallTh); // X after rot
-    BodyDepth = 1 + (2 * WallTh); // Y after rot
-    BodyTilt = 90 - FaceTilt;
+   BodyHeight = CardHeight + WallTh; // Z after rot
+   BodyWidth = CardWidth + (2 * WallTh); // X after rot
+   BodyDepth = 1 + (2 * WallTh); // Y after rot
+   BodyTilt = 90 - FaceTilt;
 
-    hull()
+   hull()
    {
       rotate([BodyTilt, 0, 0])
          cube([BodyWidth, BodyHeight, BodyDepth]);
-
-      // TODO: Calc actuals
-      translate([0 , 30, 0])
-         rotate([90, 0, 0])
-            #cube([BodyWidth, BodyHeight, BodyDepth]);
+      
+      /* 
+      BaseRear
+         Hyp=BodyHeight
+                    /|
+            Face ->/ |
+                  /  |
+                  ---  90Deg
+         Ang=BodyTilt
+      */
+      
+      /* 
+      BaseFront fill to print bed
+                   Hyp=BodyDepth
+                  |\
+                  | \
+                  |  \
+                  ----\
+         90Deg          Ang=BodyTilt
+      */
+      
+      // Adj = cos(theta) * Hyp
+      BaseRear = cos(BodyTilt) * BodyHeight;
+      // Adj = cos(theta) * Hyp
+      BaseFront = cos(FaceTilt) * BodyDepth;
+      // Opp = tan(FaceTilt) * BaseFront
+      BaseDepth = tan(FaceTilt) * BaseFront;
+      translate([0, -BaseFront, 0])
+         cube([BodyWidth, BaseFront + BaseRear, BaseDepth]);
    }
 }
 
 module CardSlotCuts(CardHeight, CardWidth, FaceTilt = 10, Lip = 2)
 {
-    BodyHeight = CardHeight + WallTh; // Z after rot
-    BodyWidth = CardWidth + (2 * WallTh); // X after rot
-    BodyDepth = 1 + (2 * WallTh); // Y after rot
-    BodyTilt = 90 - FaceTilt;
+   BodyHeight = CardHeight + WallTh; // Z after rot
+   BodyWidth = CardWidth + (2 * WallTh); // X after rot
+   BodyDepth = 1 + (2 * WallTh); // Y after rot
+   BodyTilt = 90 - FaceTilt;
 
-      rotate([BodyTilt,0,0]) translate([ 0, 1, WallTh])
-      {
-         // Slot cut
-         translate([WallTh, 0, 0])
-            cube([BodyWidth - (2 * WallTh), BodyHeight * 2, 1]);
-         // TODO: Add wiggle
+   rotate([BodyTilt,0,0]) translate([ 0, 1, WallTh])
+   {
+      // Slot cut
+      translate([WallTh, 0, 0])
+         cube([(BodyWidth - (2 * WallTh)) + Wiggle, BodyHeight * 2, 1]);
          
-         // Face cut
-         translate([Lip + WallTh, Lip, 0]) 
-            cube([BodyWidth - 2 * (WallTh + Lip), BodyHeight, BodyDepth]);
-      }
+      // Face cut
+      translate([Lip + WallTh, Lip, 0]) 
+         cube([BodyWidth - 2 * (WallTh + Lip), BodyHeight, BodyDepth]);
+   }
 }
 
 module CardHolder()
