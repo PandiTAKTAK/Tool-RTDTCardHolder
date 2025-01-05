@@ -29,7 +29,7 @@ BaseSeed = 156;
 
 /* [Hidden] */
 RenderCludge = 0.01; // Cludge to tidy up rendering interface
-Wiggle = 0.2;
+Wiggle = 1;
 
 BodyHeight = CardHeight + WallTh; // Z after rot
 BodyWidth = CardWidth + (2 * WallTh); // X after rot
